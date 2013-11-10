@@ -7,14 +7,14 @@ get '/campusData' do
   d = Database.new("maps_db")
   {'params' => params}
   id = params[:college_id]
-  p = d.getLocationsByCollegeId(id.to_i).to_s()
-   content_type 'application/json'
-  "#{p}"
+  p = d.getLocationsByCollegeId(id.to_i)
+   #content_type 'application/json'
+  "<script type='text/javascript'> var t ='" + p + "';</script>"
 end
 
 get '/register' do
   if session[:message] != nil
-   puts "SESSION DATA: " +  session[:message]
+   puts "SESSION DATA: " +  session[:username]
   end
   erb :form
 end
@@ -23,7 +23,7 @@ end
 post '/register' do
   d = Database.new("maps_db")
   # TODO: change 12345 to collegeid 
-  puts session[:message]
+  puts session[:username]
   check = d.checkUser(params[:username])
   # Check if username is empty with checkUser, if true then name is available
   if (check == false)
@@ -55,30 +55,43 @@ post '/login' do
 end
 
 get '/loggedin' do
+  if LoggedIn?
   "LOGGED IN YESSS"
+  end
 end
 
 get '/logout' do
 	"You have successfully logged out"
-	session.delete(:message) 
+	session.delete(:username) 
 end
 
 
 get '/protected' do
-  if session[:message]
+ if LoggedIn?
    "Welcome, authenticated client"
-  else
-  	"NOT ALLOWED HERE"
   end
 end
 
 
 helpers do
+  	
+  def LoggedIn?
+  # If user is logged in, they'll have correct session data
+  	if session[:username] != nil
+  	  return true
+  	else
+      redirect "/login"
+  	end
+  end	
+
+
   def protected!
     return if authorized?
     headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
     halt 401, "Not authorized\n"
   end
+
+
 
   def authorized?
     @auth ||=  Rack::Auth::Basic::Request.new(request.env)

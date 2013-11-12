@@ -1,17 +1,16 @@
+require 'rubygems' 
 require "sinatra/base"
 require './Database'
 
 class View < Sinatra::Base
   	enable :sessions
-
-	attr_accessor :db_connect
-
-	 def initialize
-	    self.db_connect = Database.new("maps_db")
-	  end
+   def self.db_connect
+	Database.new("maps_db")
+   end
 
 	get '/campusData' do
-	  d = self.db_connect 
+	  #self.db_connect = Database.new("maps_db")
+	  d = View.db_connect
 	  {'params' => params}
 	  id = params[:college_id]
 	  p = d.getLocationsByCollegeId(id.to_i)
@@ -27,7 +26,7 @@ class View < Sinatra::Base
 	end
 
 	post '/register' do
-	  d = self.db_connect  
+	  d = View.db_connect  
 	  puts session[:username]
 	  check = d.checkUser(params[:username])
 	  # Check if username is empty with checkUser, if true then name is available
@@ -45,7 +44,7 @@ class View < Sinatra::Base
 	end
 
 	post '/login' do
-	  d = self.db_connect 
+	  d = View.db_connect 
 	  user = d.getUser(params[:username])
 	  check = d.checkPass(user, params[:password])
 
@@ -61,7 +60,10 @@ class View < Sinatra::Base
 
 	get '/loggedin' do
 	  if LoggedIn?
-	  "LOGGED IN YESSS"
+	  d = View.db_connect 
+	  college_id = d.getCollegeId(session[:username])
+	  puts college_id
+	  d.getLocationsByCollegeId(college_id.to_i)
 	  end
 	end
 
@@ -78,28 +80,41 @@ class View < Sinatra::Base
 	end
 
 	get '/createLocation' do
-		d = self.db_connect 
-		test = d.getCollegeIdOfUser(session[:username])
-		erb :createLocation
+	  if LoggedIn?
+	  	@lol = "LOL"
+		d = View.db_connect 
+		test = d.getCollegeId(session[:username])
+		puts test
+		erb :createLoc, :locals => {:lol => "LOL"}
+	  end
 	end
 
 	post '/createLocation' do
-
+		if LoggedIn?
+			d = View.db_connect
+			d.setLocation(params)
+		end
 	end
 
-
+	post 'deleteLocation' do
+		if LoggedIn?
+			d = View.db_connect
+			d.destroyLocation(params)
+		end
+	end
 
 	helpers do
-	  	
-	  def LoggedIn?
-	  # If user is logged in, they'll have correct session data
+		def LoggedIn?
+	  	# If user is logged in, they'll have correct session data
 	  	if session[:username] != nil
 	  	  return true
 	  	else
 	      redirect "/login"
 	  	end
-	  end	
+	 end	
 
 	end
 
+
 end
+#View.run!

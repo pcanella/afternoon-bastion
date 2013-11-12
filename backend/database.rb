@@ -34,15 +34,27 @@ class Database
   def getLocationsByCollegeId(collegeId)
     coll = self.coll_locations
     p = coll.find("college_id" => collegeId).to_a
-    col_array = JSON.generate(p)
-    #puts col_array[0].to_s
-    json_string = JSON.parse(col_array).to_s.gsub! "=>", ":"
-    json_string.gsub! "nil", "null"
-    loc = '{"Locations":' + test2 + '}'
-    puts loc
-    return loc
+    if p.empty? == false
+      col_array = JSON.generate(p)
+      #puts col_array[0].to_s
+      json_string = JSON.parse(col_array).to_s.gsub! "=>", ":"
+      test2 = json_string.gsub! "nil", "null"
+      loc = '{"Locations":' + test2 + '}'
+    else
+      loc = '{"Locations": null}'
+    end
+    return loc.to_s
+  end
 
-    #return p 
+
+  def setLocation(params)
+    coll = self.coll_locations
+    coll.insert(params)
+  end
+
+  def destroyLocation(params)
+    coll = self.coll_locations
+    coll.remove(params)
   end
 
   def storePass(_username, _password, _collegeid)
@@ -84,6 +96,16 @@ class Database
     user = coll.find("username" => _username).to_a
     # if the user collection is empty here, it means the username is available (returns true if empty?)
     return user.empty?
+  end
+
+  def getCollegeId(_username)
+    coll = self.coll_users
+    college_id = coll.find({"username" => _username}, :fields => ["college_id"]).to_a
+    #college_id.to_s
+
+     college_id.each do |doc|
+      return doc["college_id"].to_s
+    end
   end
 
   def getUser(_username)

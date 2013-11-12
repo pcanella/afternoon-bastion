@@ -84,7 +84,7 @@ class View < Sinatra::Base
 	  	@lol = "LOL"
 		d = View.db_connect 
 		test = d.getCollegeId(session[:username])
-		puts test
+		puts params
 		erb :createLoc, :locals => {:lol => "LOL"}
 	  end
 	end
@@ -93,6 +93,7 @@ class View < Sinatra::Base
 		if LoggedIn?
 			d = View.db_connect
 			d.setLocation(params)
+			#puts params
 		end
 	end
 

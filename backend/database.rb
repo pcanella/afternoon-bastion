@@ -3,9 +3,13 @@ require 'json'
 require './Encode'
 
 include Mongo
-
-
 #Database.new
+
+class String
+  def numeric?
+    Float(self) != nil rescue false
+  end
+end
 
 class Database
   attr_accessor :db
@@ -43,13 +47,32 @@ class Database
     else
       loc = '{"Locations": null}'
     end
-    return loc.to_s
+    return loc
   end
 
 
   def setLocation(params)
-    coll = self.coll_locations
-    coll.insert(params)
+
+    newArray = {}
+     params.each do |key, value|
+       if value.to_s.numeric? === false
+          newArray[key] = value
+      else
+         v = value.to_i
+         puts v.is_a?(Integer) 
+         newArray[key] = v
+       end
+     end
+    # Must convert 
+    #g = JSON.generate(params)
+    #l = JSON.parse(g)
+    #params['college_id'] = params['college_id'].to_i
+    #puts params['college_id'].is_a?(Integer)
+    puts newArray
+    
+    #coll = self.coll_locations
+
+    #coll.insert(params)
   end
 
   def destroyLocation(params)
@@ -117,5 +140,4 @@ class Database
       return _username
     end
   end
-
 end

@@ -11,6 +11,7 @@ class String
   end
 end
 
+
 class Database
   attr_accessor :db
   attr_accessor :coll_locations
@@ -42,37 +43,69 @@ class Database
       col_array = JSON.generate(p)
       #puts col_array[0].to_s
       json_string = JSON.parse(col_array).to_s.gsub! "=>", ":"
-      test2 = json_string.gsub! "nil", "null"
-      loc = '{"Locations":' + test2 + '}'
+      #test2 = json_string.gsub! "nil", "null"
+      loc = '{"Locations":' + json_string + '}'
     else
       loc = '{"Locations": null}'
     end
     return loc
   end
 
-
+  # TODO: Add parameter sanitization
   def setLocation(params)
-
-    newArray = {}
+    coll = self.coll_locations
+     newArray = {}
      params.each do |key, value|
        if value.to_s.numeric? === false
-          newArray[key] = value
+          if key != "edit"
+            newArray[key] = value
+          end
       else
+         #Check if Integer or floating point (for lat/long)
+         if value.is_a?(Integer) === true 
          v = value.to_i
-         puts v.is_a?(Integer) 
+         #puts v.is_a?(Integer) 
          newArray[key] = v
+       else
+         f = value.to_f
+         newArray[key] = f
        end
+      end
      end
-    # Must convert 
-    #g = JSON.generate(params)
-    #l = JSON.parse(g)
-    #params['college_id'] = params['college_id'].to_i
-    #puts params['college_id'].is_a?(Integer)
     puts newArray
-    
-    #coll = self.coll_locations
+    puts params[:edit]
+    verify = verifySlug(params[:slug])
+    if params[:edit] === true
+      # if we are in edit mode, find existing slug and update it (verifying the edit as well)
+      puts "VERIFY IS " + verify
+      # if it verifies a slug (returning true), then UPDATE
+      if verify === true
+        puts "VERIFY IS " + verify
+        coll.update({"slug" => params[:slug]}, newArray)
+      end
+    else
+      # if :edit is false AND verify is false, then create a new item
+      if verify === false 
+        puts "Adding params to database...."
+        coll.insert(newArray)
+      else
+        #next
+        "Woah there! Looks like you are trying to create a new Location with an existing slug. Can't do that!"
+        #if :edit is FALSE but verify is TRUE, then throw error to user (can't create a new item with the same slug) 
+      end
+    end
+  end
 
-    #coll.insert(params)
+
+  def verifySlug(slugInQuestion)
+    coll = self.coll_locations
+     verify = coll.find("slug" => slugInQuestion).to_a
+      # if there is anything in this array, then it must be true, since each location has a unique slug
+      if verify.any? == true
+        return true
+      else
+        return false
+      end
   end
 
   def destroyLocation(params)

@@ -1,15 +1,17 @@
-CREATE LOC YO <%= lol %>
+CREATE LOC YO <%= params[:edit] %>
 <form action="/createLocation" method="post">
   <ul>
+  <input type="hidden" name="edit" value="<%= params[:edit] %>">
   <input type="hidden" name="createdBy" value="<%= session[:username] %>">
   <input type="hidden" name="createdAt" value="<%= Time.now.to_i %>"> 
   <li><input type="text" name="title" value="title"></li>
+  <li><input type="text" name="slug" value="SLUG"></li>
   <li><input type="text" name="description" value="description"></li>
   <li><input type="text" name="address" value="address"></li>
   <li><input type="text" name="category" value="category"></li>
   <li><input type="number" name="college_id" value="12345"></li>
-  <li><input type="number" name="latitude" value="latitude"></li>
-  <li><input type="number" name="longitude" value="longitude"></li>
+  <li><input type="number" name="latitude"  step="any" value="latitude"></li>
+  <li><input type="number" name="longitude" step="any" value="longitude"></li>
   <li><input type="file" name="file" id="file"></li>
 
   <li><input type="submit"></li>

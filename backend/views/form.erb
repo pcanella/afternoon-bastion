@@ -1,4 +1,7 @@
 LOGIN YO
+<% if @t === true %>
+	You are already logged in! <a href="logout">Logout?</a>
+<% else %>
 <form action="/login" method="post">
   <input type="text" name="username" value="yeezus">
   <input type="password" name="password" value="christ">
@@ -6,3 +9,4 @@ LOGIN YO
 
   <input type="submit">
 </form>
+<% end %>

@@ -14,8 +14,9 @@ class View < Sinatra::Base
 	  {'params' => params}
 	  id = params[:college_id]
 	  p = d.getLocationsByCollegeId(id.to_i)
-	   #content_type 'application/json'
-	  "<script type='text/javascript'> var t ='" + p + "';</script>"
+	   content_type 'application/json'
+	   return p
+	  #{}"<script type='text/javascript'> var t ='" + p + "';</script>"
 	end
 
 	get '/register' do
@@ -40,6 +41,7 @@ class View < Sinatra::Base
 	end
 
 	get '/login' do
+
 		erb :form
 	end
 
@@ -63,7 +65,8 @@ class View < Sinatra::Base
 	  d = View.db_connect 
 	  college_id = d.getCollegeId(session[:username])
 	  puts college_id
-	  d.getLocationsByCollegeId(college_id.to_i)
+	  #d.getLocationsByCollegeId(college_id.to_i)
+	  puts "TEST" +  d.checkLastEnteredLocation(college_id).to_s
 	  end
 	end
 
@@ -79,7 +82,17 @@ class View < Sinatra::Base
 	  end
 	end
 
-	get '/createLocation' do
+	get '/allLocations' do
+		if LoggedIn?
+			d = View.db_connect 
+			college_id = d.getCollegeId(session[:username])
+			@data = d.getLocationsByCollegeId(college_id.to_i)
+			erb :allLocations
+		end
+	end
+
+
+	get '/location' do
 	  if LoggedIn?
 	  	@lol = "LOL"
 		d = View.db_connect 
@@ -89,19 +102,37 @@ class View < Sinatra::Base
 	  end
 	end
 
-	post '/createLocation' do
+	post '/location' do
+		puts params.to_s
 		if LoggedIn?
 			d = View.db_connect
-			d.setLocation(params)
+			if params[:action] === "edit" || params[:action] === "new"
+				 #content_type :plain
+				d.setLocation(params)
+				return '{test: "TEST"}'
+			end
+
+			if params[:action] === "delete"
+				d.destroyLocation(params[:_id])
+			end
 			#puts params
 		end
 	end
 
-	post 'deleteLocation' do
+	post '/deleteLocation' do
 		if LoggedIn?
 			d = View.db_connect
 			d.destroyLocation(params)
 		end
+	end
+
+	get 'test' do 
+		"test"
+	end
+
+	post '/test' do
+	    content_type 'application/json'
+		'{"action": "Hello World!"}'
 	end
 
 	helpers do

@@ -57,7 +57,7 @@ class Database
      newArray = {}
      params.each do |key, value|
        if value.to_s.numeric? === false
-          if key != "edit"
+          if key != "action"
             newArray[key] = value
           end
       else
@@ -72,19 +72,18 @@ class Database
        end
       end
      end
-    puts newArray
     puts params[:edit]
     verify = verifySlug(params[:slug])
-    if params[:edit] === true
+    if params[:action] === "edit"
       # if we are in edit mode, find existing slug and update it (verifying the edit as well)
-      puts "VERIFY IS " + verify
+      #puts "VERIFY IS " + verify
       # if it verifies a slug (returning true), then UPDATE
       if verify === true
-        puts "VERIFY IS " + verify
-        coll.update({"slug" => params[:slug]}, newArray)
+        #puts "VERIFY IS " + verify
+        coll.update({"slug" => params[:slug]}, {"$set" => newArray})
       end
-    else
-      # if :edit is false AND verify is false, then create a new item
+    else if params[:action] === "new"
+      # if :action is new AND verify is false, then create a new item
       if verify === false 
         puts "Adding params to database...."
         coll.insert(newArray)
@@ -92,6 +91,7 @@ class Database
         #next
         "Woah there! Looks like you are trying to create a new Location with an existing slug. Can't do that!"
         #if :edit is FALSE but verify is TRUE, then throw error to user (can't create a new item with the same slug) 
+    end
       end
     end
   end
@@ -108,9 +108,18 @@ class Database
       end
   end
 
+
+  def checkLastEnteredLocation(college_id)    
+  #in mongoDB > db.locations.find({"college_id" : 12345}).sort({$natural:-1}).limit(1);
+    coll = self.coll_locations
+    c = coll.find({}, :sort => ['college_id', 1]).to_a
+    return c
+  end
+
+  # We delete locations based on unique ID set by MongoDB
   def destroyLocation(params)
     coll = self.coll_locations
-    coll.remove(params)
+    coll.remove({"_id" => params[:_id]})
   end
 
   def storePass(_username, _password, _collegeid)

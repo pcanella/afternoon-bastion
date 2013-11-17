@@ -1,7 +1,7 @@
-CREATE LOC YO <%= params[:edit] %>
-<form action="/createLocation" method="post">
+CREATE LOC YO <%= params[:action] %>
+<form action="/location" method="post">
   <ul>
-  <input type="hidden" name="edit" value="<%= params[:edit] %>">
+  <input type="hidden" name="action" value="<%= params[:action] %>">
   <input type="hidden" name="createdBy" value="<%= session[:username] %>">
   <input type="hidden" name="createdAt" value="<%= Time.now.to_i %>"> 
   <li><input type="text" name="title" value="title"></li>

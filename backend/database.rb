@@ -54,6 +54,7 @@ class Database
   # TODO: Add parameter sanitization
   def setLocation(params)
     coll = self.coll_locations
+    puts coll
      newArray = {}
      params.each do |key, value|
        if value.to_s.numeric? === false

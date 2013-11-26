@@ -20,15 +20,25 @@
 </script>
 
 <script type="text/x-handlebars" id="location">
-	<form class="form-horizontal">
-    <p>{{input type="text" name="title" value=title}}</p>
-    <p>{{input type="text" name="title" value=address}}</p>
-    <p>{{input type="text" name="title" value=createdBy disabled="disabled"}}</p>
-    <p>{{input type="text" name="title" value=title}}</p>
-    <p>{{input type="text" name="title" value=title}}</p>
-    <p>{{input type="text" name="title" value=title}}</p>
-    <p>{{input type="text" name="title" value=title}}</p>
-    </form>
+
+
+   <form role="form" id="edit_form" class="form-horizontal well">
+   <div class="form-group">
+   <label for="inputEmail3" class="col-sm-2 control-label">Title of Location</label>
+    <div class="col-sm-10">
+    {{input type="hidden" name="action" value="edit" class="form-control"}}
+    	    {{input type="text" name="title" value=title class="form-control"}}
+
+	    {{input type="text" name="address" value=address class="form-control"}}
+	    {{input type="hidden" name="slug" value=slug class="form-control"}}
+	    {{input type="text" name="createdBy" value=createdBy disabled="disabled" class="form-control"}}
+	    {{input type="number" name="latitude" value=latitude class="form-control"}}
+	    {{input type="number" name="longitude" value=longitude class="form-control"}}
+	    {{input type="text" name="category" value=category class="form-control"}}
+	    <a {{action "ajaxCall"}} href="#" class="btn btn-success complete_edit">Complete Edit</a>
+	    <a {{action "closeEditForm"}} href="#" class="btn btn-warning">Cancel and Go Back</a>
+	 </div>
+</form>
 
   </script>
 
@@ -43,12 +53,14 @@ TEST LOCATIONS
 {{#each}}
 <tr>
 	<td>{{title}}</td>
+	<td>{{slug}}</td>
 	<td>{{address}}</td> 
 	<td>{{latitude}}</td> 
 	<td>{{longitude}}</td> 
 	<td>{{category}}</td>
 	<td>
-	{{{editLocation}}}
+	<a {{action "openEdit" this }} class="btn btn-success edit-loc">Edit</a> 
+	
 	<button class="btn btn-danger">Delete</button>
 	</td>
 
@@ -70,17 +82,32 @@ var t =JSON.parse(' <%= @data %> ');
 
 <script type="text/javascript">
 $(document).ready(function(){
+
+
 //var formData = ; //Array 
 
-	$("button").on("click", function(){
+
+
+	// $(".complete_edit").on("click", function(){
+	// 	//$(".loc-table").fadeOut();
+	// });
+
+
+
+	$(".btn.btn-success.complete_edit").on("click", function(){
 		console.log("CLICK");
 		//var data = {action: "edit", slug: "chipotle", address: "5620 Fayland Drive"};
 		//var data = "?action=edit&slug=chipotle&address=5620fayland"
 		//console.log(data);
+		
+
+	});
+//{"action": "edit", "slug": "YEEZY", "address": "POWERRRRR LANE"}
+$(".complete_edit").on("click", function(){
 		$.ajax({
 		    url : "/location",
 		    type: "POST",
-		    data : {"action": "edit", "slug": "YEEZY", "address": "POWERRRRR LANE"},
+		    data : values,
 		    processData: true,
 		    //contentType: "application/json; charset=utf-8",
  			//dataType: "json",
@@ -98,9 +125,7 @@ $(document).ready(function(){
 		});
 
 	});
-
 });
-
 </script>
 
 <script src="js/libs/jquery-1.9.1.js"></script>
@@ -108,9 +133,5 @@ $(document).ready(function(){
 <script src="js/libs/ember-1.0.0-rc.8.js"></script>
 <script src="js/app.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){
-	$(".edit-btn").on("click", function(){
-		$(".loc-table").hide();
-	});
-});
+
 </script>

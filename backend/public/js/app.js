@@ -35,9 +35,34 @@ App.LocationsController = Ember.ArrayController.extend({
           $("#edit_form").fadeIn();
         });
         window.location.href = "allLocations#/locations/" + info.slug;
-
       }
+    },
 
+        ajaxDelete: function(params){
+          debugger;
+          var unparsed = {"_id": params._id, "slug": params.slug, "action": "delete"};
+      $.ajax({
+              url : "/location",
+              type: "POST",
+              data : unparsed,
+              processData: true,
+              //contentType: "application/json; charset=utf-8",
+              //dataType: "json",
+              success: function(data, textStatus, jqXHR)
+              {
+                  //data - response from server
+                  console.log("Successfully deleted!");
+                  console.log(data);
+              },
+              error: function (jqXHR, textStatus, errorThrown)
+              {
+                console.error("Some dumb error occurred");
+                console.error(errorThrown);
+                console.log(jqXHR);
+              }
+          });
+      console.log("TestDelete");
+      console.log(params._id);
     }
   }
 });
@@ -62,12 +87,13 @@ App.LocationController = Ember.ObjectController.extend({
               data : JSON.parse(values),
               processData: true,
               //contentType: "application/json; charset=utf-8",
-              dataType: "json",
+              //dataType: "json",
               success: function(data, textStatus, jqXHR)
               {
                   //data - response from server
                   console.log("SUCCESS!");
                   console.log(data);
+                  $(".edit-success").css("display", "block");
               },
               error: function (jqXHR, textStatus, errorThrown)
               {
@@ -80,17 +106,9 @@ App.LocationController = Ember.ObjectController.extend({
       $("#edit_form").hide();
         $(".loc-table").fadeIn();
         App.$isEditing = false;
-    }
+    },
   }
 });
-
-// App.LocationView = Ember.View.extend({
-//   click: function(evt){
-//     this.get('controller').send('ajaxCall');
-//     evt.preventDefault();
-//     return false;
-//   }
-// });
 
 Handlebars.registerHelper('editLocation', function(options) {
     return 'allLocations#/locations/' + this.slug;

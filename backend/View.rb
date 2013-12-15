@@ -104,19 +104,17 @@ class View < Sinatra::Base
 
 	post '/location' do
 		puts params.to_s
-		if LoggedIn?
+		#if LoggedIn?
 			d = View.db_connect
 			if params[:action] === "edit" || params[:action] === "new"
 				 #content_type :plain
 				d.setLocation(params)
 				return '{test: "TEST"}'
 			end
-
 			if params[:action] === "delete"
-				d.destroyLocation(params[:_id])
+				d.destroyLocation(params)
 			end
-			#puts params
-		end
+		#end
 	end
 
 	post '/deleteLocation' do

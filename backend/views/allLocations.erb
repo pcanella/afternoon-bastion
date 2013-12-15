@@ -1,5 +1,5 @@
 
-  <link href="http:////netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <style type="text/css">
   .locs, .locs__list li{display:inline; margin-left:20px;}
@@ -43,12 +43,8 @@
   </script>
 
 
-
-<button class="test">Click Me!</button>
-
-
 <script type="text/x-handlebars" id="locations">
-TEST LOCATIONS
+<p style="display:none" class="edit-success text-success">Successfully Edited a Location!</p>
 <table class="table table-hover table-striped loc-table">
 {{#each}}
 <tr>
@@ -61,7 +57,7 @@ TEST LOCATIONS
 	<td>
 	<a {{action "openEdit" this }} class="btn btn-success edit-loc">Edit</a> 
 	
-	<button class="btn btn-danger">Delete</button>
+	<button {{action "ajaxDelete" this}} class="btn btn-danger">Delete</button>
 	</td>
 
 </tr>
@@ -79,59 +75,7 @@ TEST LOCATIONS
 var t =JSON.parse(' <%= @data %> ');
 </script>
 
-
-<script type="text/javascript">
-$(document).ready(function(){
-
-
-//var formData = ; //Array 
-
-
-
-	// $(".complete_edit").on("click", function(){
-	// 	//$(".loc-table").fadeOut();
-	// });
-
-
-
-	$(".btn.btn-success.complete_edit").on("click", function(){
-		console.log("CLICK");
-		//var data = {action: "edit", slug: "chipotle", address: "5620 Fayland Drive"};
-		//var data = "?action=edit&slug=chipotle&address=5620fayland"
-		//console.log(data);
-		
-
-	});
-//{"action": "edit", "slug": "YEEZY", "address": "POWERRRRR LANE"}
-$(".complete_edit").on("click", function(){
-		$.ajax({
-		    url : "/location",
-		    type: "POST",
-		    data : values,
-		    processData: true,
-		    //contentType: "application/json; charset=utf-8",
- 			//dataType: "json",
-		    success: function(data, textStatus, jqXHR)
-		    {
-		        //data - response from server
-		        console.log("SUCCESS!");
-		        console.log(data);
-		    },
-		    error: function (jqXHR, textStatus, errorThrown)
-		    {
-		 		console.error("Some dumb error occurred");
-		 		console.error(errorThrown);
-		    }
-		});
-
-	});
-});
-</script>
-
 <script src="js/libs/jquery-1.9.1.js"></script>
 <script src="js/libs/handlebars-1.0.0.js"></script>
 <script src="js/libs/ember-1.0.0-rc.8.js"></script>
 <script src="js/app.js"></script>
-<script type="text/javascript">
-
-</script>

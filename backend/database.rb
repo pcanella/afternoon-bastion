@@ -80,7 +80,6 @@ class Database
       #puts "VERIFY IS " + verify
       # if it verifies a slug (returning true), then UPDATE
       if verify === true
-        #puts "VERIFY IS " + verify
         coll.update({"slug" => params[:slug]}, {"$set" => newArray})
       end
     else if params[:action] === "new"
@@ -113,6 +112,7 @@ class Database
   def checkLastEnteredLocation(college_id)    
   #in mongoDB > db.locations.find({"college_id" : 12345}).sort({$natural:-1}).limit(1);
     coll = self.coll_locations
+
     c = coll.find({}, :sort => ['college_id', 1]).to_a
     return c
   end
@@ -120,7 +120,13 @@ class Database
   # We delete locations based on unique ID set by MongoDB
   def destroyLocation(params)
     coll = self.coll_locations
-    coll.remove({"_id" => params[:_id]})
+    puts "TRYING TO DESTROY: " + params.to_s
+    #t = JSON.generate({"college_id" => "12345", "slug" => "SLUG"})
+    #puts t.to_s
+    getId = coll.find("slug" => params[:slug]).to_a
+    id = getId[0]["_id"].to_s
+    coll.remove("_id" => BSON::ObjectId.from_string(id))
+    return nil
   end
 
   def storePass(_username, _password, _collegeid)

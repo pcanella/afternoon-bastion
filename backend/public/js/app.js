@@ -1,5 +1,4 @@
-var locations = t.Locations
-
+var locations = t.Locations;
 App = Ember.Application.create({
   $isEditing: false
 
@@ -27,91 +26,105 @@ App.LocationRoute = Ember.Route.extend({
 });
 
 App.LocationsController = Ember.ArrayController.extend({
-  actions:{
-    openEdit: function(info){
-      if(App.$isEditing === false){
+  actions: {
+    openEdit: function(info) {
+      if (App.$isEditing === false) {
         App.$isEditing = true;
-        $(".loc-table").hide().promise().done(function(){
-          $("#edit_form").fadeIn();
+        $('.loc-table').hide().promise().done(function() {
+          $('#edit_form').fadeIn();
         });
-        window.location.href = "allLocations#/locations/" + info.slug;
+        window.location.href = 'allLocations#/locations/' + info.slug;
       }
     },
 
-        ajaxDelete: function(params){
-          debugger;
+      openDelete: function(info){
+        var overlay = jQuery('<div id="overlay"></div>');
+        //overlay.appendTo(document.body)
+
+        var messageBox = jQuery('<div class="delete-olay">Are you sure you want to delete this?</div>');
+        //messageBox.appendTo(document.body);
+        $('#deleteModal').modal();
+        $('.modal-loc-title').append(info.slug)
+
+        
+      },
+
+        ajaxDelete: function(params) {
           var unparsed = {"_id": params._id, "slug": params.slug, "action": "delete"};
       $.ajax({
-              url : "/location",
-              type: "POST",
+              url : '/location',
+              type: 'POST',
               data : unparsed,
               processData: true,
               //contentType: "application/json; charset=utf-8",
               //dataType: "json",
               success: function(data, textStatus, jqXHR)
               {
-                  //data - response from server
-                  console.log("Successfully deleted!");
-                  console.log(data);
+                  console.log('Successfully deleted!');
+                  $('.delete-success').css('display", "block');
+                  window.location.href = 'allLocations#/locations/';
               },
-              error: function (jqXHR, textStatus, errorThrown)
+              error: function(jqXHR, textStatus, errorThrown)
               {
-                console.error("Some dumb error occurred");
+                console.error('Some dumb error occurred');
                 console.error(errorThrown);
                 console.log(jqXHR);
               }
           });
-      console.log("TestDelete");
       console.log(params._id);
     }
   }
 });
 
 App.LocationController = Ember.ObjectController.extend({
-  actions:{
-      ajaxCall: function(){
+  actions: {
+      ajaxCall: function() {
         var self = this;
-        var $inputs = $("#edit_form :input");
+        var $inputs = $('#edit_form :input');
         var values = {};
         $inputs.each(function() {
             //console.log(values[this.name]);
             values[this.name] = $(this).val();
         });
         values = JSON.stringify(values);
-        console.log(values);
-        console.log(JSON.parse(values));
+        // console.log(values);
+        // console.log(JSON.parse(values));
         App.LocationController.prototype._actions.closeEditForm();
           $.ajax({
-              url : "/location",
-              type: "POST",
-              data : JSON.parse(values),
+              url: '/location',
+              type: 'POST',
+              data: JSON.parse(values),
               processData: true,
               //contentType: "application/json; charset=utf-8",
               //dataType: "json",
-              success: function(data, textStatus, jqXHR)
-              {
+              success: function(data, textStatus, jqXHR) {
                   //data - response from server
-                  console.log("SUCCESS!");
-                  console.log(data);
-                  $(".edit-success").css("display", "block");
+                  console.log('SUCCESS!');
+                  $('.edit-success').css('display", "block');
+                  window.location.href = 'allLocations#/locations/';
               },
-              error: function (jqXHR, textStatus, errorThrown)
-              {
-              console.error("Some dumb error occurred");
-              console.error(errorThrown);
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Some dumb error occurred');
+                console.error(errorThrown);
               }
           });
-    }, 
-    closeEditForm: function(){
-      $("#edit_form").hide();
-        $(".loc-table").fadeIn();
-        App.$isEditing = false;
     },
+    closeEditForm: function() {
+      $('#edit_form').hide();
+        $('.loc-table').fadeIn();
+        App.$isEditing = false;
+        //router.transitionTo('locations');
+        window.location.href = 'allLocations#/locations/';
+    }
   }
 });
 
 Handlebars.registerHelper('editLocation', function(options) {
     return 'allLocations#/locations/' + this.slug;
+  });
+
+Handlebars.registerHelper('addRowClass', function() {
+    return 'olay-' + this.slug;
   });
 
 

@@ -1,38 +1,6 @@
-
-  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <style type="text/css">
-  .locs, .locs__list li{display:inline; margin-left:20px;}
-
-  .locs__list {margin-top:50px !important;}
-
-  #overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
-    filter:alpha(opacity=50);
-    -moz-opacity:0.5;
-    -khtml-opacity: 0.5;
-    opacity: 0.5;
-    z-index: 10000;
-}
-
-.delete-olay{
-	position:fixed;
-	background-color:#fff;
-	z-index:20000;
-	border:1px solid black;
-
-}
-  </style>
-
-<script type="text/x-handlebars">
+<!-- <script type="text/x-handlebars">
     <div class="navbar">
       <div class="navbar-inner">
-        <a class="brand" href="#">Bloggr</a>
         <ul class="nav">
           <li>{{#link-to 'locations'}}Locations{{/link-to}}</li>
         </ul>
@@ -40,7 +8,8 @@
     </div>
 
     {{outlet}}
-</script>
+</script> -->
+
 
 <script type="text/x-handlebars" id="location">
 
@@ -67,8 +36,10 @@
 
 
 <script type="text/x-handlebars" id="locations">
-<p style="display:none" class="edit-success text-success">Successfully Edited a Location!</p>
-<p style="display:none" class="delete-success text-danger">Successfully Deleted a Location</p>
+<div class="">
+<button class="btn btn-success"><i class="fa fa-plus-square"></i>Create New Location</button>
+<p  class="edit-success text-success hide">Successfully Edited a Location!</p>
+<p class="delete-success text-danger hide">Successfully Deleted a Location</p>
 
 <table class="table table-hover table-striped loc-table">
 {{#each}}
@@ -80,7 +51,7 @@
 			<td>{{longitude}}</td> 
 			<td>{{category}}</td>
 			<td>
-			<a {{action "openEdit" this }} class="btn btn-success edit-loc">Edit</a> 
+			<a {{action "openEdit" this }} class="btn btn-info edit-loc">Edit</a> 
 			
 			<button {{action "openDelete" this}} class="btn btn-danger btn-delete">Delete</button>
 			</td>
@@ -89,6 +60,7 @@
 </table>
 
 {{outlet}}
+</div>
   </script>
 
 
@@ -100,11 +72,10 @@
         <h4 class="modal-title" id="myModalLabel">Delete <span class="modal-loc-title"></span></h4>
       </div>
       <div class="modal-body">
-        ...
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary delete_certain">Save changes</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -112,13 +83,6 @@
 
 
 
-
 <script type="text/javascript">
 var t =JSON.parse(' <%= @data %> ');
 </script>
-
-<script src="js/libs/jquery-1.9.1.js"></script>
-<script src="js/libs/handlebars-1.0.0.js"></script>
-<script src="js/libs/ember-1.0.0-rc.8.js"></script>
-<script src="js/app.js"></script>
-<script src="js/libs/bootstrap.min.js"></script>

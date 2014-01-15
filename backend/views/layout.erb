@@ -3,21 +3,145 @@
   <head>
     <title>My Page</title>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+  .locs, .locs__list li{display:inline; margin-left:20px;}
 
+  .locs__list {margin-top:50px !important;}
+
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+    z-index: 10000;
+}
+
+.delete-olay{
+  position:fixed;
+  background-color:#fff;
+  z-index:20000;
+  border:1px solid black;
+}
+
+.content{
+  margin-top:100px;
+}
+
+i{margin-right:15px;}
+  </style>
   </head>
   <body>
-    <div id='header'>
-      <nav>
-        <ul>
-          <li>Home</li>
-          <li>Contact</li>
-          <li>About Me</li>
-        </ul>
+  <div class="row clearfix content">
+    <div class="col-md-12 column">
+      <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Brand</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="active">
+              <a href="#">Link</a>
+            </li>
+            <li>
+              <a href="#">Link</a>
+            </li>
+            <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#">Action</a>
+                </li>
+                <li>
+                  <a href="#">Another action</a>
+                </li>
+                <li>
+                  <a href="#">Something else here</a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                  <a href="#">Separated link</a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                  <a href="#">One more separated link</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" />
+            </div> <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#">Link</a>
+            </li>
+            <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#">Action</a>
+                </li>
+                <li>
+                  <a href="#">Another action</a>
+                </li>
+                <li>
+                  <a href="#">Something else here</a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                  <a href="#">Separated link</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        
       </nav>
-    </div>
-    <div id='main'>
-      <%= yield %>
-    </div>
+      <div class="row clearfix">
+        <div class="col-md-4 column">
+          <ul class="nav nav-stacked nav-pills">
+                    <li class="text-muted"><small>Campus Maps</small></li>
 
+            <li class="active">
+              <a href="#/locations"><i class="fa  fa-map-marker fa-2x"></i>Your Locations</a>
+            </li>
+            <li>
+              <a href="#"><i class="fa fa-globe fa-2x"></i>View Your Map</a>
+            </li>
+            <li class="disabled">
+              <a href="#"><i class="fa fa-wrench fa-2x"></i>Account Settings</a>
+            </li>
+            
+          </ul>
+        </div>
+        <div id="test" class="col-md-8 column">
+               <%= yield %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="js/libs/jquery-1.9.1.js"></script>
+<script src="js/libs/handlebars-1.0.0.js"></script>
+<script src="js/libs/ember-1.0.0-rc.8.js"></script>
+<script src="js/app.js"></script>
+<script src="js/libs/bootstrap.min.js"></script>
   </body>
 </html>
+
+
+

@@ -1,6 +1,7 @@
 var locations = t.Locations;
 App = Ember.Application.create({
-  $isEditing: false
+  $isEditing: false,
+  rootElement: '#test'
 
 });
 
@@ -38,15 +39,25 @@ App.LocationsController = Ember.ArrayController.extend({
     },
 
       openDelete: function(info){
-        var overlay = jQuery('<div id="overlay"></div>');
+        $('#deleteModal').on('hidden.bs.modal', function(){
+          $('.modal-loc-title').html('');
+        });
+
+        var overlay = $('<div id="overlay"></div>'),
+        self = this;
         //overlay.appendTo(document.body)
 
-        var messageBox = jQuery('<div class="delete-olay">Are you sure you want to delete this?</div>');
-        //messageBox.appendTo(document.body);
+        var messageBox = $('<div class="delete-olay">Are you sure you want to delete this?</div>');
         $('#deleteModal').modal();
-        $('.modal-loc-title').append(info.slug)
-
-        
+        $('.modal-loc-title').append(info.slug);
+        $('.modal-body').append(messageBox);
+        $('.delete_certain').on('click', function(){
+        App.LocationsController.prototype._actions.ajaxDelete(info);
+          $('.delete-success').removeClass('hide');
+          $('.olay-' + info.slug).fadeOut('slow', function(){
+            this.remove();
+          });
+        });
       },
 
         ajaxDelete: function(params) {
@@ -61,12 +72,13 @@ App.LocationsController = Ember.ArrayController.extend({
               success: function(data, textStatus, jqXHR)
               {
                   console.log('Successfully deleted!');
-                  $('.delete-success').css('display", "block');
-                  window.location.href = 'allLocations#/locations/';
+                   $('#deleteModal').modal('hide');
+                   //$('.delete-success').css('display", "block !important');
               },
               error: function(jqXHR, textStatus, errorThrown)
               {
                 console.error('Some dumb error occurred');
+                $('#deleteModal').modal('hide');
                 console.error(errorThrown);
                 console.log(jqXHR);
               }

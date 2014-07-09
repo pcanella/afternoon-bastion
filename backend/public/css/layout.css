@@ -1,0 +1,46 @@
+.locs, .locs__list li{display:inline; margin-left:20px;}
+
+  .locs__list {margin-top:50px !important;}
+
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+    z-index: 10000;
+}
+
+table tbody td{
+  vertical-align: baseline !important;
+}
+
+.delete-olay{
+  position:fixed;
+  background-color:#fff;
+  z-index:20000;
+  border:1px solid black;
+}
+
+.content{
+  margin-top:100px;
+}
+
+i{margin-right:15px;}
+
+#edit_form input {
+margin-bottom: 20px;
+}
+
+.edit-container{
+  margin-top:20px;
+}
+
+.create-location{
+  margin-bottom:20px;
+}

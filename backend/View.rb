@@ -42,7 +42,7 @@ class View < Sinatra::Base
 
 	get '/login' do
 
-		erb :form
+		erb :form,  {:layout => :login_layout}
 	end
 
 	post '/login' do
@@ -52,6 +52,7 @@ class View < Sinatra::Base
 
 	  if(check == true)
 	  	session[:username] = user.to_s
+	  	session[:college_id] = d.getCollegeId(user.to_s)
 	  	puts session[:username]
 	  	redirect '/loggedin'
 	  else
@@ -66,13 +67,15 @@ class View < Sinatra::Base
 	  college_id = d.getCollegeId(session[:username])
 	  puts college_id
 	  #d.getLocationsByCollegeId(college_id.to_i)
-	  puts "TEST" +  d.checkLastEnteredLocation(college_id).to_s
+	  puts d.checkLastEnteredLocation(college_id).to_s
+	  redirect "/allLocations#/locations"
 	  end
 	end
 
 	get '/logout' do
 		"You have successfully logged out"
 		session.delete(:username) 
+
 	end
 
 
@@ -94,11 +97,10 @@ class View < Sinatra::Base
 
 	get '/location' do
 	  if LoggedIn?
-	  	@lol = "LOL"
 		d = View.db_connect 
-		test = d.getCollegeId(session[:username])
+		@college_id = d.getCollegeId(session[:username])
 		puts params
-		erb :createLoc, :locals => {:lol => "LOL"}
+		erb :createLoc, {:layout => :layout}
 	  end
 	end
 
@@ -109,12 +111,13 @@ class View < Sinatra::Base
 			if params[:action] === "edit" || params[:action] === "new"
 				 #content_type :plain
 				d.setLocation(params)
-				return '{test: "TEST"}'
+				erb :createLoc, {:layout => :layout}
 			end
 			if params[:action] === "delete"
 				d.destroyLocation(params)
 			end
 		#end
+
 	end
 
 	post '/deleteLocation' do
@@ -122,10 +125,6 @@ class View < Sinatra::Base
 			d = View.db_connect
 			d.destroyLocation(params)
 		end
-	end
-
-	get 'test' do 
-		"test"
 	end
 
 	post '/test' do

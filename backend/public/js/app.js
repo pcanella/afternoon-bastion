@@ -1,23 +1,36 @@
+//TODO: Add App.$isEditing = false when exiting the locations page. Some sort of handler or listener thingy
+
 var locations = t.Locations;
 App = Ember.Application.create({
-  $isEditing: false,
-  rootElement: '#test'
-
+    $isEditing: false,
+    $isCreating: false,
+    $isDeleting: false,
+    $test: '',
+    rootElement: '#test'
 });
 
 App.Router.map(function() {
-  this.resource('locations', function() {
-    this.resource('location', { path: ':slug' });
-        App.$isEditing = false;
-
-  });
+    this.resource('locations', function() {
+        this.resource('location', { path: ':slug' });
+    });
 });
 
 App.LocationsRoute = Ember.Route.extend({
-  model: function() {
-    //console.log(locations[0]);
-    return locations;
-  }
+    model: function() {
+      // Set to false every time, to re-initiate "edit"
+        $(document).on('hidden.bs.modal', function() {
+            console.log('repainting modal...');
+            App.$isEditing = false;
+            App.$isCreating = false;
+            App.$isDeleting = false;
+            // Every time modal comes, this field is reset
+            $('.modal-loc-title').html('');
+            $('.modal-body').html('');
+            $('.option-confirm').text('');
+            $('.btn-default').next().removeAttr('class').addClass('option-confirm btn');
+        });
+        return locations;
+    }
 });
 
 App.LocationRoute = Ember.Route.extend({
@@ -28,57 +41,94 @@ App.LocationRoute = Ember.Route.extend({
 
 App.LocationsController = Ember.ArrayController.extend({
   actions: {
+      // Resets modal to "default"
+      initModal: function() {
+
+      },
+
+      openNew: function(info) {
+        App.$isCreating = true;
+        App.LocationsController.prototype._actions.initModal();
+        $('#optionsModal').modal();
+
+
+      },
+
     openEdit: function(info) {
-      if (App.$isEditing === false) {
-        App.$isEditing = true;
-        $('.loc-table').hide().promise().done(function() {
-          $('#edit_form').fadeIn();
+         window.location.href = 'allLocations#/locations/' + info.slug;
+          $('#optionsModal').modal();
+          var t = $('.edit_location_form').clone();
+          console.log(t);
+  setTimeout(function() {
+         $('.modal-body').append($('.edit_location_form').html());
+         App.$isEditing = true;
+          },100);
+
+
+
+        
+        
+
+          $('.option-confirm').addClass('btn-success').append('Complete Edit');
+          $('.option-confirm').on('click', function() {
+    
+            setTimeout(function(){
+            App.LocationController.prototype._actions.ajaxCall();
+
+            }, 800);       
+
         });
-        window.location.href = 'allLocations#/locations/' + info.slug;
-      }
+
     },
 
-      openDelete: function(info){
-        $('#deleteModal').on('hidden.bs.modal', function(){
-          $('.modal-loc-title').html('');
+
+      openDelete: function(info) {
+        App.$isDeleting = true;
+        //App.LocationsController.initModal();
+        var open;
+        $('#optionsModal').on('hidden.bs.modal', function() {
+          // Every time modal comes, this field is reset
+          $('.modal-loc-title, .option-confirm').html('');
         });
 
         var overlay = $('<div id="overlay"></div>'),
         self = this;
         //overlay.appendTo(document.body)
-
-        var messageBox = $('<div class="delete-olay">Are you sure you want to delete this?</div>');
-        $('#deleteModal').modal();
-        $('.modal-loc-title').append(info.slug);
+        $('.option-confirm').addClass('btn-danger delete_certain');
+        var messageBox = $('<div class="delete-olay">Are you sure you want to delete the <strong>' + info.title + '</strong> location? You cannot undo this!</div>');
+        $('.option-confirm').append('Yes, Delete This Location');
+        $('.modal-loc-title').append('Delete ' + info.title);
         $('.modal-body').append(messageBox);
-        $('.delete_certain').on('click', function(){
-        App.LocationsController.prototype._actions.ajaxDelete(info);
+        $('#optionsModal').modal();
+
+        $('.delete_certain').on('click', function() {
+          App.LocationsController.prototype._actions.ajaxDelete(info);
           $('.delete-success').removeClass('hide');
-          $('.olay-' + info.slug).fadeOut('slow', function(){
-            this.remove();
+          $('.olay-' + info.slug).fadeOut('slow', function() {
+             this.remove();
           });
         });
       },
 
         ajaxDelete: function(params) {
-          var unparsed = {"_id": params._id, "slug": params.slug, "action": "delete"};
+          var unparsed = {'_id': params._id, 'slug': params.slug, 'action': 'delete'};
       $.ajax({
-              url : '/location',
+              url: '/location',
               type: 'POST',
-              data : unparsed,
+              data: unparsed,
               processData: true,
               //contentType: "application/json; charset=utf-8",
               //dataType: "json",
               success: function(data, textStatus, jqXHR)
               {
                   console.log('Successfully deleted!');
-                   $('#deleteModal').modal('hide');
+                   $('#optionsModal').modal('hide');
                    //$('.delete-success').css('display", "block !important');
               },
               error: function(jqXHR, textStatus, errorThrown)
               {
                 console.error('Some dumb error occurred');
-                $('#deleteModal').modal('hide');
+                $('#optionsModal').modal('hide');
                 console.error(errorThrown);
                 console.log(jqXHR);
               }
@@ -101,7 +151,7 @@ App.LocationController = Ember.ObjectController.extend({
         values = JSON.stringify(values);
         // console.log(values);
         // console.log(JSON.parse(values));
-        App.LocationController.prototype._actions.closeEditForm();
+        //App.LocationController.prototype._actions.closeEditForm();
           $.ajax({
               url: '/location',
               type: 'POST',
@@ -111,9 +161,13 @@ App.LocationController = Ember.ObjectController.extend({
               //dataType: "json",
               success: function(data, textStatus, jqXHR) {
                   //data - response from server
-                  console.log('SUCCESS!');
+                  console.log('SUCCESS!', data);
                   $('.edit-success').css('display", "block');
+                  $('body').css('background', 'lime');
+                    console.log('MOAR SUCCESS');
+
                   window.location.href = 'allLocations#/locations/';
+
               },
               error: function(jqXHR, textStatus, errorThrown) {
                 console.error('Some dumb error occurred');
@@ -122,7 +176,7 @@ App.LocationController = Ember.ObjectController.extend({
           });
     },
     closeEditForm: function() {
-      $('#edit_form').hide();
+      //$('#edit_form').hide();
         $('.loc-table').fadeIn();
         App.$isEditing = false;
         //router.transitionTo('locations');
@@ -135,23 +189,10 @@ Handlebars.registerHelper('editLocation', function(options) {
     return 'allLocations#/locations/' + this.slug;
   });
 
+
 Handlebars.registerHelper('addRowClass', function() {
     return 'olay-' + this.slug;
   });
-
-
-
-
-// var showdown = new Showdown.converter();
-
-
-// Ember.Handlebars.helper('format-markdown', function(input) {
-//   return new Handlebars.SafeString(showdown.makeHtml(input));
-// });
-
-// Ember.Handlebars.helper('format-date', function(date) {
-//   return moment(date).fromNow();
-// });
 
 
 

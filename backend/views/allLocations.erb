@@ -1,19 +1,7 @@
-<!-- <script type="text/x-handlebars">
-    <div class="navbar">
-      <div class="navbar-inner">
-        <ul class="nav">
-          <li>{{#link-to 'locations'}}Locations{{/link-to}}</li>
-        </ul>
-      </div>
-    </div>
-
-    {{outlet}}
-</script> -->
 
 
 <script type="text/x-handlebars" id="location">
-
-
+  <div class="edit_location_form" style="display:block;">
    <form role="form" id="edit_form" class="form-horizontal well">
    <div class="form-group">
    <label for="inputEmail3" class="col-sm-2 control-label">Title of Location</label>
@@ -27,17 +15,17 @@
 	    {{input type="number" name="latitude" value=latitude class="form-control"}}
 	    {{input type="number" name="longitude" value=longitude class="form-control"}}
 	    {{input type="text" name="category" value=category class="form-control"}}
-	    <a {{action "ajaxCall"}} href="#" class="btn btn-success complete_edit">Complete Edit</a>
+	   <a {{action "ajaxCall"}} href="#" class="btn btn-success complete_edit">Complete Edit</a>
 	    <a {{action "closeEditForm"}} href="#" class="btn btn-warning">Cancel and Go Back</a>
 	 </div>
 </form>
-
+</div>
   </script>
 
 
 <script type="text/x-handlebars" id="locations">
-<div class="">
-<button class="btn btn-success"><i class="fa fa-plus-square"></i>Create New Location</button>
+<div class="edit-container">
+<button class="btn btn-success create-location" {{action "openNew" this}}><i class="fa fa-plus-square"></i>Create New Location</button>
 <p  class="edit-success text-success hide">Successfully Edited a Location!</p>
 <p class="delete-success text-danger hide">Successfully Deleted a Location</p>
 
@@ -64,18 +52,18 @@
   </script>
 
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Delete <span class="modal-loc-title"></span></h4>
+        <h4 class="modal-title" id="myModalLabel"><span class="modal-loc-title"></span></h4>
       </div>
       <div class="modal-body">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary delete_certain">Save changes</button>
+        <button type="button" class="option-confirm btn"></button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

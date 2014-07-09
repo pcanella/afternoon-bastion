@@ -1,4 +1,4 @@
-# views/layout.erb
+# views/login_layout.erb
 <html>
   <head>
     <title>My Page</title>
@@ -12,6 +12,7 @@
   </style>
   </head>
   <body>
+
 
   <div class="row clearfix content">
     <div class="col-md-12 column">
@@ -86,12 +87,12 @@
         
       </nav>
       <div class="row clearfix">
-        <div class="col-md-4 column">
+       <!--  <div class="col-md-4 column">
           <ul class="nav nav-stacked nav-pills">
                     <li class="text-muted"><small>Campus Maps</small></li>
 
             <li class="active">
-              <a href="allLocations#/locations"><i class="fa fa-map-marker fa-2x"></i>Your Locations</a>
+              <a href="#/locations"><i class="fa fa-map-marker fa-2x"></i>Your Locations</a>
             </li>
             <li>
               <a href="#"><i class="fa fa-globe fa-2x"></i>View Your Map</a>
@@ -101,8 +102,8 @@
             </li>
             
           </ul>
-        </div>
-        <div id="test" class="col-md-8 column">
+        </div> -->
+        <div id="test" class="col-md-12 column">
                <%= yield %>
         </div>
       </div>
@@ -114,12 +115,6 @@
 <script src="js/libs/ember-1.0.0-rc.8.js"></script>
 <script src="js/app.js"></script>
 <script src="js/libs/bootstrap.min.js"></script>
-
-<script type="text/javascript">
-  var userInfo = {'loggedInUser': '<%= session[:username] %>',
-                  'collegeId' : '<%= session[:collegeid] %>'}
-
-</script>
   </body>
 </html>
 

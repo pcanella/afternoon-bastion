@@ -1,4 +1,4 @@
-CREATE LOC YO <%= params[:action] %>
+CREATE LOC YO <%= @college_id %>
 <form action="/location" method="post">
   <ul>
   <input type="hidden" name="action" value="<%= params[:action] %>">
@@ -9,7 +9,7 @@ CREATE LOC YO <%= params[:action] %>
   <li><input type="text" name="description" value="description"></li>
   <li><input type="text" name="address" value="address"></li>
   <li><input type="text" name="category" value="category"></li>
-  <li><input type="number" name="college_id" value="12345"></li>
+  <li><input type="number" name="college_id" value="<%= session[:college_id]%>"></li>
   <li><input type="number" name="latitude"  step="any" value="latitude"></li>
   <li><input type="number" name="longitude" step="any" value="longitude"></li>
   <li><input type="file" name="file" id="file"></li>
